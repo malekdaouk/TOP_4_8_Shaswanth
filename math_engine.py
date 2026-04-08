@@ -557,9 +557,12 @@ def run_calculations(df, style_rows_with_ERR):
     active_passive = active_passive[~active_passive.astype(str).apply(lambda col: col.str.contains("ERR:", na=False)).any(axis=1)] # drop any row where any column contains "ERR:"
     active_passive = (active_passive.pivot(index="category_name", columns="index_fund", values="Market Value").fillna(0).reset_index())      # bring category_name back as a normal column
     active_passive = active_passive.rename(columns={"False": "Active $","True": "Passive $"}) # 5. Rename the pivoted columns to something readable
+    for col in ["Active $", "Passive $"]:
+        if col not in active_passive.columns:
+            active_passive[col] = 0
     active_passive['Market Value'] = active_passive['Active $']  + active_passive['Passive $']
     active_passive = active_passive[(active_passive["Active $"] + active_passive["Passive $"]) >= 0.01*(df['Market Value'].sum())]
-    active_passive
+    active_passive = active_passive[['category_name','Active $','Passive $','Market Value']]
 
 
     individual_stocks_df =  grouped_by_ticker  [['Name','Symbol','Market Value','detailed_security_type','annualized_daily_one_year_return','annualized_three_year_return', 'annualized_daily_five_year_return','max_drawdown_1y','max_drawdown_3y','max_drawdown_5y','daily_standard_deviation_1y','daily_standard_deviation_3y','daily_standard_deviation_5y']]
