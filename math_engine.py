@@ -356,7 +356,7 @@ def run_calculations(df, style_rows_with_ERR):
         gaa_table.sort_values("Asset Class", inplace=True)
         gaa_table.reset_index(drop=True, inplace=True)
 
-        gaa_table[num_cols_gaa] = gaa_table[num_cols_gaa].applymap(lambda x: f"{x*100:.2f}%" if pd.notna(x) else "")
+        gaa_table[num_cols_gaa] = gaa_table[num_cols_gaa].map(lambda x: f"{x*100:.2f}%" if pd.notna(x) else "")
 
     # =====================================================
     # STYLE COLUMNS
